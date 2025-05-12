@@ -38,6 +38,17 @@ The project includes a full PostgreSQL setup, a Jupyter notebook with analysis, 
 
 ```
 postgres-arborfoods/
+├── binder/ # Live demo environment (Binder-ready)
+│ ├── binder-demo.ipynb # SQLite version of the notebook for Binder
+│ ├── data/ # CSVs exported from PostgreSQL
+│ │ ├── suppliers.csv
+│ │ ├── customers.csv
+│ │ └── ...
+│ ├── postBuild # Script to build SQLite DB from CSVs
+│ ├── requirements.txt # Python dependencies for Binder
+│ ├── runtime.txt # Python version for Binder
+│ └── setup_sqlite.py # Converts CSVs into arborfoods.db
+│
 ├── data/ # PostgreSQL dump files
 │ ├── arborfoods_dump.sql # Optional: SQL dump (restorable via psql)
 │ └── arborfoods_dump.tar # SQL binary dump (pg_restore)
