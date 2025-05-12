@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+    postgres:
+        image: postgres:latest
+        container_name: postgresql_arborfoods
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: userName
+            POSTGRES_PASSWORD: userPassword
+            POSTGRES_DB: arborfoods_db
+        ports:
+            - "5432:5432"
+        volumes:
+            - volumeLocation:/var/lib/postgresql/data
+
+volumes:
+    volumeLocation:
