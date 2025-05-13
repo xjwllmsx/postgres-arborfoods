@@ -90,10 +90,7 @@ python scripts/export_postgres_tables.py
 
 Loads the exported CSV files into a local SQLite database (arborfoods.db) for use in the Binder demo notebook.
 
-Run automatically on Binder via postBuild
-
-Can be run manually during testing:
-
+To prepare the SQLite database manually (for local testing or rebuilding the demo), run:
 ```bash
 python binder/setup_sqlite.py
 ```
