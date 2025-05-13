@@ -1,4 +1,4 @@
-# Arbor Foods Trading Co. — SQL Data Analysis Project
+# Arbor Foods Trading Co.: SQL Data Analysis Project
 
 This project simulates data analysis for **Arbor Foods Trading Co.**, a fictional wholesale food distributor. The goal is to showcase SQL-based analytical workflows using **PostgreSQL**, including:
 
@@ -22,6 +22,7 @@ The project includes a full PostgreSQL setup, a Jupyter notebook with analysis, 
 ## Contents
 
 -   [Project Structure](#project-structure)
+-   [Scripts](#scripts)
 -   [Live Demo (via Binder)](#live-demo-via-binder)
 -   [Running the Full PostgreSQL Version](#running-the-full-postgresql-version)
     -   [Environment Variables to Set](#environment-variables-to-set)
@@ -38,32 +39,63 @@ The project includes a full PostgreSQL setup, a Jupyter notebook with analysis, 
 
 ```
 postgres-arborfoods/
-├── binder/ # Live demo environment (Binder-ready)
-│ ├── binder-demo.ipynb # SQLite version of the notebook for Binder
-│ ├── data/ # CSVs exported from PostgreSQL
+├── binder/ # Binder demo environment (SQLite-based)
+│ ├── binder-demo.ipynb # SQLite version of the notebook
+│ ├── arborfoods.db # Auto-generated SQLite database
+│ ├── data/ # CSVs generated from PostgreSQL
 │ │ ├── suppliers.csv
 │ │ ├── customers.csv
 │ │ └── ...
-│ ├── postBuild # Script to build SQLite DB from CSVs
+│ ├── postBuild # Script to build arborfoods.db from CSVs
 │ ├── requirements.txt # Python dependencies for Binder
 │ ├── runtime.txt # Python version for Binder
-│ └── setup_sqlite.py # Converts CSVs into arborfoods.db
+│ └── setup_sqlite.py # Loads CSVs into SQLite (arborfoods.db)
 │
-├── data/ # PostgreSQL dump files
-│ ├── arborfoods_dump.sql # Optional: SQL dump (restorable via psql)
-│ └── arborfoods_dump.tar # SQL binary dump (pg_restore)
+├── data/ # PostgreSQL database dumps
+│ ├── arborfoods_dump.sql # Optional: SQL dump (for psql restore)
+│ └── arborfoods_dump.tar # SQL binary dump (for pg_restore)
 │
-├── docker/ # PostgreSQL Docker configuration
+├── docker/ # Docker Compose setup for PostgreSQL
 │ └── docker-compose.yml
 │
-├── notebooks/
-│ └── postgresql-arborfoods.ipynb # Main analysis notebook using PostgreSQL
+├── notebook/
+│ └── postgresql-arborfoods.ipynb # Full PostgreSQL notebook
+│
+├── scripts/ # Utility scripts
+│ └── export_postgres_tables.py # Exports all PostgreSQL tables to CSV
 │
 ├── LICENSE # MIT license for code/scripts
-├── pyproject.toml # Project configuration (used with uv)
-├── uv.lock # Locked dependencies for reproducibility
+├── pyproject.toml # Project dependencies (managed with uv)
+├── uv.lock # Locked dependency versions
 ├── README.md # Project overview and instructions
-└── .gitignore # Standard ignores
+└── .gitignore # Standard ignore file
+```
+
+## Scripts
+
+This project includes two utility scripts that support reproducibility and Binder compatibility:
+
+### `scripts/export_postgres_tables.py`
+
+Exports all tables from the PostgreSQL `arborfoods_db` database into individual CSV files using `pandas` and `SQLAlchemy`.
+
+-   Output location: `binder/data/`
+-   Run from the project root:
+
+```bash
+python scripts/export_postgres_tables.py
+```
+
+### binder/setup_sqlite.py
+
+Loads the exported CSV files into a local SQLite database (arborfoods.db) for use in the Binder demo notebook.
+
+Run automatically on Binder via postBuild
+
+Can be run manually during testing:
+
+```bash
+python binder/setup_sqlite.py
 ```
 
 ## Live Demo (via Binder)
