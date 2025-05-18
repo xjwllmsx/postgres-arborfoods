@@ -9,3 +9,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Docker environment file
+docker/postgres.env
