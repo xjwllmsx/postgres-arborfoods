@@ -28,7 +28,7 @@ The project includes a full PostgreSQL setup, a Jupyter notebook with analysis, 
     -   [Environment Variables to Set](#environment-variables-to-set)
     -   [Steps to Run](#steps-to-run)
         -   [1. Clone the repository](#1-clone-the-repository)
-        -   [2. Edit Docker credentials (if needed)](#2-edit-docker-credentials-if-needed)
+        -   [2. Set environment variables](#2-set-environment-variables)
         -   [3. Start the PostgreSQL container](#3-start-the-postgresql-container)
         -   [4. Restore the database](#4-restore-the-database)
         -   [5. Open the Jupyter Notebook](#5-open-the-jupyter-notebook)
@@ -57,6 +57,7 @@ postgres-arborfoods/
 │
 ├── docker/ # Docker Compose setup for PostgreSQL
 │ └── docker-compose.yml
+│ └── postgres.env.example
 │
 ├── notebook/
 │ └── postgresql-arborfoods.ipynb # Full PostgreSQL notebook
@@ -91,6 +92,7 @@ python scripts/export_postgres_tables.py
 Loads the exported CSV files into a local SQLite database (arborfoods.db) for use in the Binder demo notebook.
 
 To prepare the SQLite database manually (for local testing or rebuilding the demo), run:
+
 ```bash
 python binder/setup_sqlite.py
 ```
@@ -103,25 +105,30 @@ You can explore a demo version of this project using SQLite, directly in your br
 
 ## Running the Full PostgreSQL Version
 
-This project includes a docker-compose.yml file to spin up a PostgreSQL database in a containerized environment.
+This project includes a `docker-compose.yml` file and a `.env` file to spin up a PostgreSQL database in a containerized environment with minimal configuration.
 
 **Note**: The Docker Compose file is configured to:
 
 -   Create a container named `postgresql_arborfoods`
--   Create a database (e.g., `arborfoods_db`)
--   Set your desired `POSTGRES_USER` and `POSTGRES_PASSWORD`
+-   Create a PostgreSQL database using values defined in `docker/postgres.env`
 -   Expose PostgreSQL on port `5432`
--   Persist data in a named Docker volume
+-   Persist data using a named Docker volume
 
 ### Environment Variables to Set
 
-Update these placeholders in the docker-compose.yml before launching:
-| Placeholder | Description |
-| ---------------- | ----------------------------------------- |
-| `userName` | The PostgreSQL username you want to use |
-| `userPassword` | The corresponding password for the user |
-| `arborfoods_db` | The name of the database to create |
-| `volumeLocation` | Name of the Docker volume to persist data |
+Edit the `docker/postgres.env` file before launching:
+
+```env
+POSTGRES_USER=userNameHere
+POSTGRES_PASSWORD=userPasswordHere
+POSTGRES_DB=arborfoods_db
+```
+
+| Variable            | Description                                |
+| ------------------- | ------------------------------------------ |
+| `POSTGRES_USER`     | Username to access the PostgreSQL database |
+| `POSTGRES_PASSWORD` | Password for the database user             |
+| `POSTGRES_DB`       | Name of the database to be created         |
 
 ### Steps to Run
 
@@ -132,32 +139,32 @@ git clone https://github.com/xjwllmsx/postgres-arborfoods.git
 cd postgres-arborfoods
 ```
 
-#### 2. Edit Docker credentials (if needed)
+#### 2. Set environment variables
 
-Open docker/docker-compose.yml and set:
+Copy the example `.env` file and update the values:
 
-```yaml
-POSTGRES_USER: your_username
-POSTGRES_PASSWORD: your_password
-POSTGRES_DB: your_database_name
+```bash
+cp docker/postgres.env.example docker/postgres.env
 ```
 
-Example:
+Then edit `docker/postgres.env` to set your desired credentials:
 
-```yaml
-POSTGRES_USER: joseph
-POSTGRES_PASSWORD: secretpassword
-POSTGRES_DB: arborfoods_db
+```env
+POSTGRES_USER=your_username
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=arborfoods_db
 ```
 
 #### 3. Start the PostgreSQL container
 
+From the `docker/` directory, start the container using your environment file:
+
 ```bash
 cd docker
-docker-compose up -d
+docker compose --env-file ./postgres.env up -d
 ```
 
-This will spin up the container and create the database.
+This will launch a PostgreSQL container named `postgresql_arborfoods` using the credentials you defined in `postgres.env`.
 
 #### 4. Restore the database
 
@@ -173,8 +180,8 @@ docker exec -it postgresql_arborfoods psql -U your_username -d your_database_nam
 
 Replace:
 
--   `your_username` → same as `POSTGRES_USER`
--   `your_database_name` → same as `POSTGRES_DB`
+-   `your_username` with the value of `POSTGRES_USER`
+-   `your_database_name` with the value of `POSTGRES_DB`
 
 #### 5. Open the Jupyter Notebook
 
